@@ -14,15 +14,17 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   late Razorpay _razorpay;
+  // Callback function to handle payment success
   void _paymentSuccess(PaymentSuccessResponse response) {
-    //toast
     print("success $response");
   }
 
+// Callback function to handle payment failure
   void _paymentFaliure(PaymentSuccessResponse response) {
     print("Faliure $response");
   }
 
+// Callback function to handle external wallet payments
   void _paymentWallet(ExternalWalletResponse response) {}
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _CartScreenState extends State<CartScreen> {
         context.read<CartscreenController>().getAllCartItems();
       },
     );
+    // Initialize Razorpay and set up event listeners
     _razorpay = Razorpay();
     _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _paymentSuccess);
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _paymentFaliure);
@@ -41,9 +44,11 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void dispose() {
     super.dispose();
+    // Clear Razorpay resources
     _razorpay.clear();
   }
 
+// Function to start the checkout process with Razorpay
   void checkout(num amt) {
     var options = {
       //dynamic key of client please replace key with your key
@@ -167,6 +172,7 @@ class _CartScreenState extends State<CartScreen> {
                         Spacer(),
                         InkWell(
                           onTap: () {
+                            // Start checkout process
                             checkout(totalAmount);
                           },
                           child: Container(

@@ -10,13 +10,15 @@ class CartItem extends StatelessWidget {
       this.onDecrement,
       this.onRemove,
       required this.price,
-      this.image});
+      this.image,
+      this.isFreeItem = false});
   final String title;
   final num price, qty;
   final String? image;
   final VoidCallback? onIncrement;
   final VoidCallback? onDecrement;
   final VoidCallback? onRemove;
+  final bool isFreeItem;
 
   @override
   Widget build(BuildContext context) {
@@ -62,63 +64,66 @@ class CartItem extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        height: 40,
-                        width: 80,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  isFreeItem == false
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Container(
+                              height: 40,
+                              width: 80,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  InkWell(
+                                    onTap: onDecrement,
+                                    child: Text(
+                                      "-",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorConstants.black),
+                                    ),
+                                  ),
+                                  Text(
+                                    "$qty",
+                                    style: TextStyle(
+                                        fontSize: 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorConstants.black),
+                                  ),
+                                  InkWell(
+                                    onTap: onIncrement,
+                                    child: Text(
+                                      "+",
+                                      style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: ColorConstants.black),
+                                    ),
+                                  )
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: ColorConstants.green),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
                             InkWell(
-                              onTap: onDecrement,
-                              child: Text(
-                                "-",
-                                style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.black),
+                              onTap: onRemove,
+                              child: CircleAvatar(
+                                backgroundColor: ColorConstants.black,
+                                child: Icon(
+                                  Icons.delete_outline,
+                                  color: ColorConstants.red,
+                                ),
                               ),
                             ),
-                            Text(
-                              "$qty",
-                              style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                  color: ColorConstants.black),
-                            ),
-                            InkWell(
-                              onTap: onIncrement,
-                              child: Text(
-                                "+",
-                                style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.bold,
-                                    color: ColorConstants.black),
-                              ),
-                            )
                           ],
-                        ),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: ColorConstants.green),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      InkWell(
-                        onTap: onRemove,
-                        child: CircleAvatar(
-                          backgroundColor: ColorConstants.black,
-                          child: Icon(
-                            Icons.delete_outline,
-                            color: ColorConstants.red,
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
+                        )
+                      : SizedBox()
                 ],
               ),
             ),

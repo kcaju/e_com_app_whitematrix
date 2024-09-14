@@ -1,15 +1,6 @@
 class DummyDb {
+  //list of new arrivals
   static const List newArrivals = [
-    // {
-    //   "image":
-    //       "https://img.freepik.com/free-photo/stylish-ethnic-teen-man-sunglasses-walking-street_23-2148205408.jpg?ga=GA1.1.517226562.1719138582&semt=ais_hybrid",
-    //   "title": "Cotton T-Shirt",
-    //   "price": 400,
-    //   "description":
-    //       "Comfortable T-shirt in a variety of colors. Crafted from 100% cotton for all-day comfort and easy care.",
-    //   "rating": "4.3",
-    //   "id": 1
-    // },
     {
       "image":
           "https://devotedstore.com/cdn/shop/files/20.png?v=1711236919&width=1080",
@@ -51,6 +42,7 @@ class DummyDb {
       "id": 5
     },
   ];
+  //list of dummy products
   static const List products = [
     {
       "image":

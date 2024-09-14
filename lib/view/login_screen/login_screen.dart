@@ -1,13 +1,43 @@
+import 'package:e_commerce_app/view/home_screen/home_screen.dart';
 import 'package:e_commerce_app/view/otp_screen.dart/otp_screen.dart';
 import 'package:e_commerce_app/view/utils/colorconstants.dart';
 import 'package:e_commerce_app/view/utils/image_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late final SharedPreferences prefs;
+  @override
+  void initState() {
+    login(); // Check if the user is already logged in when the screen is initialized
+    super.initState();
+  }
+
+  // Function to handle login check and navigation
+  login() async {
+    prefs = await SharedPreferences.getInstance();
+    bool isLoggedIn = await prefs.getBool('isLoggedIn') ?? false;
+
+    if (isLoggedIn) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Initialize form key and text controller
     GlobalKey<FormState> formkey = GlobalKey<FormState>();
     TextEditingController phn = TextEditingController();
     return Scaffold(
@@ -41,13 +71,14 @@ class LoginScreen extends StatelessWidget {
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
                 child: Form(
-                  key: formkey,
+                  key: formkey, // Assign form key
                   child: Column(
                     children: [
                       TextFormField(
                         controller: phn,
                         validator: (value) {
                           if (value!.length < 10 && value.length > 10) {
+                            // Validate phone number length
                             return "Enter a valid phone number";
                           }
                           return null;
@@ -82,9 +113,13 @@ class LoginScreen extends StatelessWidget {
                                 backgroundColor: WidgetStatePropertyAll(
                                     ColorConstants.black),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
+                                // Save phone number and login status
+                                await prefs.setString('phone', phn.text);
+                                await prefs.setBool('isLoggedIn', true);
                                 if (formkey.currentState!.validate()) {
                                   if (phn.text.length == 10) {
+                                    // Validate form and navigate to OTP screen
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
@@ -111,10 +146,6 @@ class LoginScreen extends StatelessWidget {
                                 style: TextStyle(
                                     color: ColorConstants.white, fontSize: 22),
                               ))),
-                      // Image.asset(
-                      //   ImageConstants.login,
-                      //   height: 180,
-                      // ),
                       SizedBox(
                         height: 50,
                       )

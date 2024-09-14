@@ -14,6 +14,7 @@ class ProductdetailsScreen extends StatelessWidget {
       required this.rate,
       required this.price,
       required this.id});
+  // Final variables to hold product details
   final String title, des, image, rate;
   final num price, id;
 
@@ -34,6 +35,7 @@ class ProductdetailsScreen extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
+                            // Back button to navigate to the previous screen
                             Navigator.pop(context);
                           },
                           child: Icon(
@@ -149,6 +151,7 @@ class ProductdetailsScreen extends StatelessWidget {
                     SizedBox(
                       height: 25,
                     ),
+                    // Add to Cart button
                     InkWell(
                       onTap: () {
                         context
@@ -162,6 +165,7 @@ class ProductdetailsScreen extends StatelessWidget {
                             )
                             .then(
                           (value) {
+                            // Navigate to the CartScreen after adding item to the cart
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

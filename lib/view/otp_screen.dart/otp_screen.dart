@@ -7,6 +7,7 @@ class OtpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create a GlobalKey for the form to manage its state
     final formkey = GlobalKey<FormState>();
 
     return Scaffold(
@@ -31,6 +32,7 @@ class OtpScreen extends StatelessWidget {
                       6,
                       (index) => Row(
                         children: [
+                          // Row containing OTP input fields
                           Container(
                             height: 50,
                             width: 50,
@@ -38,12 +40,13 @@ class OtpScreen extends StatelessWidget {
                               style: TextStyle(color: ColorConstants.black),
                               onChanged: (value) {
                                 if (value.length == 1) {
-                                  //automatically goes to next textfield
+                                  // Automatically move to the next field when the current field has one character
                                   FocusScope.of(context).nextFocus();
                                 }
                               },
                               validator: (value) {
                                 if (value != null && value.length == 1) {
+                                  // Validate that the input is a single character
                                   return null;
                                 } else {
                                   return "X";

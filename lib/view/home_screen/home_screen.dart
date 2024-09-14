@@ -4,16 +4,20 @@ import 'package:e_commerce_app/controller/cartscreen_controller.dart';
 import 'package:e_commerce_app/controller/homescreen_controller.dart';
 import 'package:e_commerce_app/view/cartscreen/cart_screen.dart';
 import 'package:e_commerce_app/view/home_screen/widget/product_card.dart';
+import 'package:e_commerce_app/view/login_screen/login_screen.dart';
 import 'package:e_commerce_app/view/productdetails_screen/productdetails_screen.dart';
 import 'package:e_commerce_app/view/utils/colorconstants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:scratcher/widgets.dart';
-// import 'package:scratcher/scratcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, this.scrtch, this.islogin = false});
-  final void scrtch;
+  const HomeScreen({
+    super.key,
+    this.islogin = false,
+  });
+
   final bool islogin;
 
   @override
@@ -21,12 +25,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isDialogShown = false;
+  bool _isDialogShown =
+      false; // Track if the scratch card dialog has been shown
+
   void _showScratchCardDialog() {
-    // Pick a random product from your dummy database
+    // Fetch the home screen controller and get a random product
     final homescreenController = context.read<HomescreenController>();
     final randomProduct = homescreenController.getRandomProduct();
-
+// Show a dialog with a scratch card
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -61,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(height: 10),
                 ElevatedButton(
                   onPressed: () {
-                    // Add the free product to the cart
+                    // Add the free product to the cart and navigate to the cart screen
                     context
                         .read<CartscreenController>()
                         .addCartItem(
@@ -69,9 +75,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           price: 0.0, // Free product
                           des: randomProduct['description'],
                           id: randomProduct['id'],
+                          isFreeItem: true,
                           image: randomProduct['image'],
                         )
                         .then((value) {
+                      Navigator.pop(context); // Close the dialog
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -88,19 +96,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   height: 10,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    setState(() {});
-                  },
-                  child: Text(
-                    'Close',
-                    style: TextStyle(color: ColorConstants.white),
-                  ),
-                  style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStatePropertyAll(ColorConstants.red)),
-                )
               ],
             ),
           ),
@@ -110,6 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _showDialogAfterBuild() async {
+    // Show the scratch card dialog after the build is complete
     await Future.delayed(Duration.zero);
     if (!_isDialogShown) {
       setState(() {
@@ -130,7 +126,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    // Show the scratch card dialog if the user has logged in
     super.initState();
     if (widget.islogin) {
       _showDialogAfterBuild();
@@ -143,10 +139,17 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: ColorConstants.black,
         appBar: AppBar(
           backgroundColor: ColorConstants.black,
-          leading: Icon(
-            Icons.menu,
-            color: ColorConstants.white,
-          ),
+          leading: Builder(builder: (context) {
+            return InkWell(
+              onTap: () {
+                Scaffold.of(context).openDrawer();
+              },
+              child: Icon(
+                Icons.menu,
+                color: ColorConstants.white,
+              ),
+            );
+          }),
           actions: [
             InkWell(
               onTap: () {
@@ -166,6 +169,60 @@ class _HomeScreenState extends State<HomeScreen> {
               width: 10,
             )
           ],
+        ),
+        drawer: Drawer(
+          child: Container(
+            color: ColorConstants.black,
+            child: ListView(
+              children: [
+                DrawerHeader(
+                    child: Column(
+                  children: [
+                    Text(
+                      "H E L L O",
+                      style:
+                          TextStyle(color: ColorConstants.white, fontSize: 20),
+                    ),
+                  ],
+                )),
+                ListTile(
+                  leading: Icon(
+                    Icons.home,
+                    color: ColorConstants.white,
+                  ),
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  title: Text(
+                    "Home",
+                    style: TextStyle(color: ColorConstants.white, fontSize: 20),
+                  ),
+                ),
+                ListTile(
+                  leading: Icon(
+                    Icons.power_settings_new_rounded,
+                    color: ColorConstants.white,
+                  ),
+                  onTap: () async {
+                    // Log out by clearing shared preferences and navigating to login screen
+                    final SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    await prefs.clear(); // Clears all keys
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginScreen(),
+                      ),
+                    );
+                  },
+                  title: Text(
+                    "LogOut",
+                    style: TextStyle(color: ColorConstants.white, fontSize: 20),
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
         body: Consumer<HomescreenController>(
           builder: (context, newArrivalProv, child) => Column(

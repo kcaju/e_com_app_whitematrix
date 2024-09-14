@@ -8,8 +8,11 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Hive for local storage
   await Hive.initFlutter();
+  // Register the adapter for CartModel with Hive.
   Hive.registerAdapter<CartModel>(CartModelAdapter());
+  // Open a Hive box for storing CartModel objects
   var box = await Hive.openBox<CartModel>("cartItemBox");
   runApp(MyApp());
 }
